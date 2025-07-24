@@ -1,5 +1,6 @@
 // app/dashboard/page.js (서버 컴포넌트, 기본이 서버 컴포넌트임)
 import React, { Suspense } from "react";
+import { requireAuth } from "@/lib/auth";
 import Card from "@/app/ui/Card";
 import Spinner from "./ui/Spinner";
 
@@ -12,6 +13,8 @@ async function getPosts() {
 }
 
 export default async function DashboardPage() {
+  await requireAuth();
+
   const posts = await getPosts();
 
   const today = new Date().toLocaleDateString("ko-KR", {
