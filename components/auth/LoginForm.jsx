@@ -1,51 +1,51 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Button from '../Button'
-import supabase from '../../lib/supabaseClient'
-import { useAuth } from '../../app/context/AuthContext'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Button from "../Button";
+import supabase from "../../lib/supabaseClient";
+import { useAuth } from "../../app/context/AuthContext";
 
 export default function LoginForm() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [pw, setPw] = useState('')
-  const [error, setError] = useState('')
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [error, setError] = useState("");
 
-  const { login } = useAuth()
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!email || !pw) {
-      setError('이메일과 비밀번호를 모두 입력해주세요.')
-      return
+      setError("이메일과 비밀번호를 모두 입력해주세요.");
+      return;
     }
 
     try {
-      const { data, error: loginError } = await supabase.auth.signInWithPassword({
-        email,
-        password: pw,
-      })
+      const { data, error: loginError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password: pw,
+        });
 
       if (loginError) {
-        setError('로그인 실패: ' + loginError.message)
-        return
+        setError("로그인 실패: " + loginError.message);
+        return;
       }
 
       if (data && data.user) {
-        login(data.user)  // 전역 상태 저장
-        router.push('/dashboard')  // 대시보드 이동
+        login(data.user); // 전역 상태 저장
+        router.push("/"); // 대시보드 이동
       } else {
-        setError('로그인에 실패했습니다. 다시 시도해주세요.')
+        setError("로그인에 실패했습니다. 다시 시도해주세요.");
       }
-
     } catch (err) {
-      console.error(err)
-      setError('예기치 못한 오류가 발생했습니다.')
+      console.error(err);
+      setError("예기치 못한 오류가 발생했습니다.");
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -80,5 +80,5 @@ export default function LoginForm() {
         </form>
       </div>
     </div>
-  )
+  );
 }

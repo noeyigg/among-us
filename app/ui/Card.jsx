@@ -4,7 +4,7 @@ import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
 
 const Card = ({ post, presenter, commentCount }) => {
   return (
-    <Link href={`dashboard/${post.id}`}>
+    <Link href={`${post.id}`}>
       <div className="border border-gray-200 shadow-md rounded-2xl p-6 m-3 bg-white hover:shadow-lg hover:bg-gray-50 transition-all duration-200 cursor-pointer">
         <h3 className="text-lg font-semibold text-gray-800 mb-2">
           {post.topic}
