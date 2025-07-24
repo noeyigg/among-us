@@ -79,7 +79,7 @@ export default function SignupForm() {
       router.push('/login')
     } catch (err) {
       console.error(err)
-      setError('예기치 못한 오류가 발생했습니다.')
+      setError('회원가입 실패: ' + signUpError.message)
     }
   }
 
@@ -93,7 +93,7 @@ export default function SignupForm() {
             placeholder="이름"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
 
           <div>
@@ -102,7 +102,7 @@ export default function SignupForm() {
               placeholder="이메일"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
             />
             {email && !isEmailValid && (
               <p className="text-red-500 text-sm mt-1">올바른 이메일 형식을 입력해주세요.</p>
@@ -115,7 +115,7 @@ export default function SignupForm() {
               placeholder="비밀번호"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
             />
             {pw && !isPwValid && (
               <p className="text-red-500 text-sm mt-1">
@@ -129,7 +129,7 @@ export default function SignupForm() {
             placeholder="인증코드"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
