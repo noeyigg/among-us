@@ -4,10 +4,10 @@ import React from "react";
 const PostForm = () => {
   return (
     <form className="flex items-center space-x-2">
-      <input
+      <textarea
         type="text"
         placeholder="내용을 입력하세요"
-        className="flex-grow px-4 py-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+        className="flex-grow h-25 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
       />
       <button
         type="submit"
