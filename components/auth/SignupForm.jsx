@@ -75,7 +75,7 @@ export default function SignupForm() {
         return
       }
 
-      alert('회원가입 완료! 이메일 인증 후 로그인하세요.')
+      alert('회원가입 완료!')
       router.push('/login')
     } catch (err) {
       console.error(err)
