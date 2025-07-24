@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 
 export default function RootLayout({ children }) {
   return (
+
     <html lang="ko">
       <body className="px-4 md:px-20">
         {/* 로그인 전역 상태 유지 */}
@@ -17,4 +18,3 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
-
