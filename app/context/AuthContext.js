@@ -1,5 +1,5 @@
 'use client'
-
+//전역 로그인 상태관리
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const AuthContext = createContext()
