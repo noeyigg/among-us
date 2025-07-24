@@ -39,10 +39,12 @@ export default function SignupForm() {
     }
 
     try {
-      // 🔐 비밀번호 해싱
+      // 비밀번호 해싱
       const hashedPassword = await bcrypt.hash(pw, 10)
 
-      // 🔑 Supabase Auth에 등록
+      // Supabase Auth에 등록 
+      // Supabase에 자동으로 생성되있는 테이블
+      // 사용자 로그인, 회원가입시 자동기록
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password: pw,
@@ -60,7 +62,8 @@ export default function SignupForm() {
         return
       }
 
-      // 🗃️ Supabase RDB(users 테이블)에 추가 정보 저장
+      // Supabase RDB(users 테이블)에 추가 정보 저장
+      // 사용자 정보 기록
       const { error: dbError } = await supabase.from('users').insert({
         id: userId,
         name,
