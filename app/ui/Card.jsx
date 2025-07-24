@@ -1,17 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
-import data from "@/lib/mock-data.json";
 
-const Card = ({ post }) => {
-  const presenter =
-    data.users.find((user) => user.id === post.presenter_id)?.name ||
-    "알 수 없음";
-
-  const commentCount = data.comments.filter(
-    (item) => item.post_id === post.id
-  ).length;
-
+const Card = ({ post, presenter, commentCount }) => {
   return (
     <Link href={`dashboard/${post.id}`}>
       <div className="border border-gray-200 shadow-md rounded-2xl p-6 m-3 bg-white hover:shadow-lg hover:bg-gray-50 transition-all duration-200 cursor-pointer">
