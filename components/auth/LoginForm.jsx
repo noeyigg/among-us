@@ -4,15 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "../Button";
-import supabase from "../../lib/supabaseClient";
-import { useAuth } from "../../app/context/AuthContext";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
-
   const { login } = useAuth();
 
   const handleLogin = async (e) => {
@@ -23,27 +21,19 @@ export default function LoginForm() {
       return;
     }
 
-    try {
-      const { data, error: loginError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password: pw,
-        });
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password: pw }),
+    });
 
-      if (loginError) {
-        setError("로그인 실패: " + loginError.message);
-        return;
-      }
+    const data = await res.json();
 
-      if (data && data.user) {
-        login(data.user); // 전역 상태 저장
-        router.push("/"); // 대시보드 이동
-      } else {
-        setError("로그인에 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("예기치 못한 오류가 발생했습니다.");
+    if (data.ok) {
+      login(data.user);
+      router.push("/"); // 로그인 성공 후 루트 이동
+    } else {
+      setError(data.message || "로그인 실패");
     }
   };
 

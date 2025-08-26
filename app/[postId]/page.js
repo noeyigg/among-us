@@ -1,36 +1,15 @@
-// app/dashboard/[postId]/page.js
 import { Suspense } from "react";
 import PostForm from "../ui/PostForm";
-import Comment from "../ui/Comment";
 import Spinner from "../ui/Spinner";
+import CommentsClient from "../ui/CommentsClient"; 
 
 async function getPostData(postId) {
   const res = await fetch(`http://localhost:3000/api/${postId}`, {
     cache: "no-store",
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch post data");
-  }
-
-  const json = await res.json();
-  return json;
-}
-
-async function Comments({ postId }) {
-  const { comments } = await getPostData(postId);
-
-  return (
-    <div>
-      {comments.map((comment) => (
-        <Comment
-          key={comment.id}
-          time={comment.created_at}
-          content={comment.content}
-        />
-      ))}
-    </div>
-  );
+  if (!res.ok) throw new Error("Failed to fetch post data");
+  return res.json();
 }
 
 export default async function PostIdPage({ params }) {
@@ -48,11 +27,11 @@ export default async function PostIdPage({ params }) {
           </p>
         </div>
 
-        <PostForm />
+        <PostForm postId={postId} />
 
         {/* 댓글 데이터 Suspense로 streaming 처리 */}
         <Suspense fallback={<Spinner />}>
-          <Comments postId={postId} />
+          <CommentsClient postId={postId} />
         </Suspense>
       </>
     );
