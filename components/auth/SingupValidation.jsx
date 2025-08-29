@@ -1,10 +1,9 @@
-export function validateId(id) {
-  const regex = /^[a-z0-9]{3,16}$/;
-  return regex.test(id);
-}
+export const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
-export function validatePassword(password) {
-  const regex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?!.*\s).{8,16}$/;
-  return regex.test(password);
-}
-
+export const validatePassword = (password) => {
+  const pwRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
+  return pwRegex.test(password);
+};
