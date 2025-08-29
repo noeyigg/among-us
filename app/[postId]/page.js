@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import PostForm from "../ui/PostForm";
 import Spinner from "../ui/Spinner";
 import CommentsClient from "../ui/CommentsClient"; 
+import PostActions from "../ui/PostActions";
 
 async function getPostData(postId) {
   const res = await fetch(`http://localhost:3000/api/${postId}`, {
@@ -25,6 +26,13 @@ export default async function PostIdPage({ params }) {
             <span className="font-bold text-xl mb-4">{post.topic}</span>
             {` - ${post.users.name}`}
           </p>
+
+           {/* 게시글 작성자만 보이는 수정/삭제 버튼 */}
+           <PostActions
+             postId={postId}
+             presenterId={post.presenter_id}
+             initialTopic={post.topic}
+           />
         </div>
 
         <PostForm postId={postId} />
