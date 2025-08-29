@@ -105,3 +105,136 @@ export async function POST(req, { params }) {
     return Response.json({ error: '서버 오류가 발생했습니다' }, { status: 500 });
   }
 }
+
+export async function PATCH(req, { params }) {
+  const { postId } = params;
+  const body = await req.json();
+  const { kind, authorId } = body || {};
+
+  if (!kind || !authorId) {
+    return Response.json({ error: "잘못된 요청입니다." }, { status: 400 });
+  }
+
+  // 게시글 수정
+  if (kind === "post") {
+    const { topic } = body || {};
+    if (!topic?.trim()) {
+      return Response.json({ error: "제목이 비었습니다." }, { status: 400 });
+    }
+
+    // 내가 소유자인지 확인 (presenter_id 검사)
+    const { data: post, error: findErr } = await supabase
+      .from("posts")
+      .select("id, presenter_id")
+      .eq("id", postId)
+      .single();
+
+    if (findErr) return Response.json({ error: findErr.message }, { status: 500 });
+    if (String(post.presenter_id) !== String(authorId)) {
+      return Response.json({ error: "권한이 없습니다." }, { status: 403 });
+    }
+
+    const { error: updateErr } = await supabase
+      .from("posts")
+      .update({ topic })
+      .eq("id", postId);
+
+    if (updateErr) return Response.json({ error: updateErr.message }, { status: 500 });
+    return Response.json({ success: true });
+  }
+
+  // 댓글 수정
+  if (kind === "comment") {
+    const { commentId, content } = body || {};
+    if (!commentId || !content?.trim()) {
+      return Response.json({ error: "잘못된 요청입니다." }, { status: 400 });
+    }
+
+    // 내 댓글인지 확인
+    const { data: target, error: findErr } = await supabase
+      .from("comments")
+      .select("id, author_id, post_id")
+      .eq("id", commentId)
+      .single();
+
+    if (findErr) return Response.json({ error: findErr.message }, { status: 500 });
+    if (String(target.author_id) !== String(authorId)) {
+      return Response.json({ error: "권한이 없습니다." }, { status: 403 });
+    }
+    if (String(target.post_id) !== String(postId)) {
+      return Response.json({ error: "postId 불일치" }, { status: 400 });
+    }
+
+    const { error: updateErr } = await supabase
+      .from("comments")
+      .update({ content })
+      .eq("id", commentId);
+
+    if (updateErr) return Response.json({ error: updateErr.message }, { status: 500 });
+    return Response.json({ success: true });
+  }
+
+  return Response.json({ error: 'kind는 "post" 또는 "comment" 여야 합니다.' }, { status: 400 });
+}
+
+// 댓글 삭제 OR 게시글 삭제
+export async function DELETE(req, { params }) {
+  const { postId } = params;
+  const body = await req.json();
+  const { kind, authorId } = body || {};
+
+  if (!kind || !authorId) {
+    return Response.json({ error: "잘못된 요청입니다." }, { status: 400 });
+  }
+
+  // 게시글 삭제 (작성자만)
+  if (kind === "post") {
+    const { data: post, error: findErr } = await supabase
+      .from("posts")
+      .select("id, presenter_id")
+      .eq("id", postId)
+      .single();
+
+    if (findErr) return Response.json({ error: findErr.message }, { status: 500 });
+    if (String(post.presenter_id) !== String(authorId)) {
+      return Response.json({ error: "권한이 없습니다." }, { status: 403 });
+    }
+
+    // FK CASCADE가 없다면 댓글 먼저 제거
+    await supabase.from("comments").delete().eq("post_id", postId);
+
+    const { error: delErr } = await supabase.from("posts").delete().eq("id", postId);
+    if (delErr) return Response.json({ error: delErr.message }, { status: 500 });
+
+    return Response.json({ success: true });
+  }
+
+  // 댓글 삭제 (작성자만)
+  if (kind === "comment") {
+    const { commentId } = body || {};
+    if (!commentId) {
+      return Response.json({ error: "잘못된 요청입니다." }, { status: 400 });
+    }
+
+    const { data: target, error: findErr } = await supabase
+      .from("comments")
+      .select("id, author_id, post_id")
+      .eq("id", commentId)
+      .single();
+
+    if (findErr) return Response.json({ error: findErr.message }, { status: 500 });
+    if (String(target.author_id) !== String(authorId)) {
+      return Response.json({ error: "권한이 없습니다." }, { status: 403 });
+    }
+    if (String(target.post_id) !== String(postId)) {
+      return Response.json({ error: "postId 불일치" }, { status: 400 });
+    }
+
+    const { error: delErr } = await supabase.from("comments").delete().eq("id", commentId);
+    if (delErr) return Response.json({ error: delErr.message }, { status: 500 });
+
+    return Response.json({ success: true });
+  }
+
+  return Response.json({ error: 'kind는 "post" 또는 "comment" 여야 합니다.' }, { status: 400 });
+}
