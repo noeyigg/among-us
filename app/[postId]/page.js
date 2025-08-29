@@ -5,7 +5,7 @@ import CommentsClient from "../ui/CommentsClient";
 import PostActions from "../ui/PostActions";
 
 async function getPostData(postId) {
-  const res = await fetch(`http://localhost:3000/api/${postId}`, {
+  const res = await fetch(`/api/${postId}`, {
     cache: "no-store",
   });
 
