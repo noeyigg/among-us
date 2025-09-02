@@ -7,7 +7,7 @@ import CreatePostButton from "@/app/ui/CreatePostButton";
 import supabase from "@/lib/supabaseClient";
 
 async function getPosts() {
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.BASE_URL || 'https://wooriview.vercel.app';
   const res = await fetch(`${baseUrl}/api`, {
     cache: "no-store",
   });

@@ -5,7 +5,7 @@ import CommentsClient from "../ui/CommentsClient";
 import PostActions from "../ui/PostActions";
 
 async function getPostData(postId) {
-  const baseUrl = process.env.BASE_URL
+  const baseUrl = process.env.BASE_URL || 'https://wooriview.vercel.app';
   const res = await fetch(`${baseUrl}/api/${postId}`, {
     cache: "no-store",
   });
