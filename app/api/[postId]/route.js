@@ -4,7 +4,9 @@ export async function GET(request, { params }) {
   const { postId } = await params;
 
   try {
-    const url = new URL(request.url);
+    // 상대 경로가 들어와도 안전하게 파싱되도록 base 지정
+    const base = process.env.BASE_URL || 'https://wooriview.vercel.app';
+    const url = new URL(request.url, base);
     const viewerId = url.searchParams.get("viewerId");
 
     // 게시글 + 작성자 정보 조회
